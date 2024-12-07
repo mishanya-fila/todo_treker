@@ -21,7 +21,8 @@ class Task:
 
 
 def command_in_text(msg: types.Message):
-    buttons_text = ['Новый список задач', 'Списки задач', 'Переименовать список задач', 'Удалить список задач', 'Новая задача', 'Задачи в списке']
+    buttons_text = ['Новый список задач', 'Списки задач', 'Переименовать список задач', 'Удалить список задач',
+                    'Новая задача', 'Задачи в списке']
     if any(['/' + str(i.command) in msg.text for i in default_commands]) or msg.text in buttons_text:
         return True
 
