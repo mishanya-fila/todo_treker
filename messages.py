@@ -67,8 +67,7 @@ def prepare_show_tasks_msg(res_list: [Task], key: str):
         elif not i.status:
             task_status_button = types.InlineKeyboardButton(text='❌', callback_data=i.name)
         to_trash_button = types.InlineKeyboardButton(text='🗑', callback_data=f'{i.name} to_trash')
-        time_button = types.InlineKeyboardButton(text='📆', callback_data='time')
-        keyboard.add(task_name_button, task_status_button, time_button, to_trash_button, row_width=4)
+        keyboard.add(task_name_button, task_status_button, to_trash_button, row_width=4)
     return msg, keyboard
 
 
