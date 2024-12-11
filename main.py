@@ -22,7 +22,7 @@ class Task:
 
 def command_in_text(msg: types.Message):
     buttons_text = ['Новый список задач', 'Списки задач', 'Переименовать список задач', 'Удалить список задач',
-                    'Новая задача', 'Задачи в списке']
+                    'Новая задача', 'Задачи в списке', '📝', '🗑', '❌', '✅']
     if any(['/' + str(i.command) in msg.text for i in default_commands]) or msg.text in buttons_text:
         return True
 
@@ -167,6 +167,32 @@ def update_status(call: types.CallbackQuery):
     user_states[chat_id][current_list][current_task].update_status()
     call.data = user_states[chat_id][current_list][current_task].status
     show_tasks(msg=call.message)
+
+
+@bot.callback_query_handler(func=lambda call: 'rename' in call.data.split())
+def rename_task(call: types.CallbackQuery):
+    current_tasks[call.message.chat.id] = call.data.split()[0]
+    message = bot.send_message(chat_id=call.message.chat.id, text=messages.rename_task_message)
+    bot.register_next_step_handler(message=message, callback=rename_task_callback)
+
+
+def rename_task_callback(msg: types.Message):
+    new_name = msg.text
+    old_name = current_tasks[msg.chat.id]
+    if old_name == new_name:
+        bot.send_message(chat_id=msg.chat.id, text=messages.rename_same_tasks, parse_mode='HTML')
+        show_tasks(msg=msg)
+        return
+    if command_in_text(msg):
+        bot.send_message(chat_id=msg.chat.id, text=messages.command_in_text_msg)
+        show_tasks(msg=msg)
+        return
+    curr_list = current_lists[msg.chat.id]
+    current_tasks[msg.chat.id] = new_name
+    user_states[msg.chat.id][curr_list][new_name] = user_states[msg.chat.id][curr_list][old_name]
+    user_states[msg.chat.id][curr_list].pop(old_name)
+    user_states[msg.chat.id][curr_list][new_name].name = new_name
+    bot.send_message(chat_id=msg.chat.id, text=messages.rename_task_success)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.split())

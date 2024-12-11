@@ -66,8 +66,9 @@ def prepare_show_tasks_msg(res_list: [Task], key: str):
             task_status_button = types.InlineKeyboardButton(text='✅', callback_data=i.name)
         elif not i.status:
             task_status_button = types.InlineKeyboardButton(text='❌', callback_data=i.name)
+        rename_task_button = types.InlineKeyboardButton(text='📝', callback_data=f'{i.name} rename')
         to_trash_button = types.InlineKeyboardButton(text='🗑', callback_data=f'{i.name} to_trash')
-        keyboard.add(task_name_button, task_status_button, to_trash_button, row_width=4)
+        keyboard.add(task_name_button, task_status_button, rename_task_button, to_trash_button, row_width=4)
     return msg, keyboard
 
 
@@ -76,3 +77,8 @@ echo_message = f'Бот не понимает данного сообщения.
                f'Воспользуйтесь командой {formatting.hcode("/help")} чтобы увидеть возможности бота'
 command_in_text_msg = 'В переданном тексте указано имя команды.\n' \
                       'Пожалуйста, не используйте имена команд в качестве имён задач и имён списков задач!'
+rename_task_message = 'Отправьте новое название задачи, отличное от старого'
+rename_same_tasks = f'Новое название задачи совпадает со старым. ' \
+                    f'Нажмите кнопку {formatting.hbold("📝")} и введите {formatting.hbold("новое")} ' \
+                    f'имя задачи'
+rename_task_success = 'Название задачи успешно обновлено'
