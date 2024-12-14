@@ -265,7 +265,11 @@ def update_status(call: types.CallbackQuery):
 
 @bot.callback_query_handler(func=lambda call: 'rename' in call.data.split())
 def rename_task(call: types.CallbackQuery):
-    current_tasks[call.message.chat.id] = call.data.split()[0]
+    if len(call.data.split()) > 2:
+        task_name = ' '.join(call.data.split()[:-1])
+    else:
+        task_name = call.data.split()[0]
+    current_tasks[call.message.chat.id] = task_name
     message = bot.send_message(chat_id=call.message.chat.id, text=messages.rename_task_message)
     bot.register_next_step_handler(message=message, callback=rename_task_callback)
     save_current_task()
@@ -294,7 +298,11 @@ def rename_task_callback(msg: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data.split())
 def remove_task(call: types.CallbackQuery):
-    user_states[call.message.chat.id][current_lists[call.message.chat.id]].pop(call.data.split()[0])
+    if len(call.data.split()) > 2:
+        task_name = ' '.join(call.data.split()[:-1])
+    else:
+        task_name = call.data.split()[0]
+    user_states[call.message.chat.id][current_lists[call.message.chat.id]].pop(task_name)
     bot.send_message(chat_id=call.message.chat.id, text=messages.remove_task_msg)
     show_tasks(msg=call.message)
     save_data()
